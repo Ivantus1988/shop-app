@@ -12,9 +12,9 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlugDatabase {
+public class DummyDatabase {
 
-    private static final PlugDatabase INSTANCE = new PlugDatabase();
+    private static final DummyDatabase INSTANCE = new DummyDatabase();
 
     private final Map<Integer, Product> products = new HashMap<>() {{
         put(2, Product.builder()
@@ -31,7 +31,7 @@ public class PlugDatabase {
                 .build());
     }};
 
-    public static PlugDatabase getInstance() {
+    public static DummyDatabase getInstance() {
         return INSTANCE;
     }
 }

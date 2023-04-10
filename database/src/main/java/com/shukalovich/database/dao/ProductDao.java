@@ -1,6 +1,6 @@
 package com.shukalovich.database.dao;
 
-import com.shukalovich.database.PlugDatabase;
+import com.shukalovich.database.DummyDatabase;
 import com.shukalovich.database.entity.Brand;
 import com.shukalovich.database.entity.Product;
 import lombok.AccessLevel;
@@ -13,21 +13,7 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProductDao implements Dao<Integer, Product>{
     private static final ProductDao INSTANCE = new ProductDao();
-    private final PlugDatabase db = PlugDatabase.getInstance();
-
-    private static final int ID = 1;
-    private static final String MODEL = "S22";
-    private static final double PRICE = 2000.2;
-    private static final Brand BRAND = Brand.SAMSUNG;
-
-    public Product getProduct() {
-        return Product.builder()
-                .id(ID)
-                .model(MODEL)
-                .price(PRICE)
-                .brand(BRAND).
-                build();
-    }
+    private final DummyDatabase db = DummyDatabase.getInstance();
 
     public static ProductDao getInstance() {
         return INSTANCE;
