@@ -1,60 +1,56 @@
 package com.shukalovich.database.dao;
 
-import com.shukalovich.database.entity.Product;
-import com.shukalovich.database.entity.Role;
+import com.shukalovich.database.DummyDatabase;
 import com.shukalovich.database.entity.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class UserDao implements Dao<Integer, User>{
+public final class UserDao implements Dao<Long, User> {
+
+    private final DummyDatabase db = DummyDatabase.getInstance();
 
     private static final UserDao INSTANCE = new UserDao();
-    private static final int ID = 1;
-    private static final String NAME = "Bob";
-    private static final String SURNAME = "Johnson";
-    private static final String EMAIL = "example@gmail.com";
-    private static final Role ROLE = Role.USER;
 
-    public User getUser() {
-        return User.builder()
-                .id(ID)
-                .name(NAME)
-                .surname(SURNAME)
-                .email(EMAIL)
-                .role(ROLE).
-                build();
-    }
 
-    public static UserDao getInstance() {
-        return INSTANCE;
+    public Optional<User> findByEmailAndPass(String email, String password) {
+        return db.getUsers().values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .filter(user -> user.getPassword().equals(password))
+                .findAny();
     }
 
     @Override
-    public User delete(Integer id) {
-        return null;
+    public User delete(Long id) {
+        return Optional.ofNullable(db.getUsers().remove(id))
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
     public List<User> findAll() {
-        return null;
+        return new ArrayList<>(db.getUsers().values());
     }
 
     @Override
-    public Optional<User> findById(Integer id) {
-        return Optional.empty();
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(db.getUsers().get(id));
     }
 
     @Override
     public void update(User product) {
-
     }
+
     @Override
-    public User save(User product) {
-        return null;
+    public User save(User user) {
+        Long dummyID = db.getUsers().keySet().size() + 1L;
+        user.setId(dummyID);
+        return db.getUsers().put(dummyID, user);
+    }
+
+    public static UserDao getInstance() {
+        return INSTANCE;
     }
 }

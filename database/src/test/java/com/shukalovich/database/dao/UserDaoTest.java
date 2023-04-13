@@ -1,23 +1,22 @@
 package com.shukalovich.database.dao;
 
-import com.shukalovich.database.entity.Role;
+import com.shukalovich.database.DummyDatabase;
 import com.shukalovich.database.entity.User;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 public class UserDaoTest {
-    private static final int ID = 1;
-
+    private final DummyDatabase db = DummyDatabase.getInstance();
+    private static final long ID_USER_1 = 1;
     @org.junit.Test
     public void getUser() {
-        UserDao userDao = UserDao.getInstance();
+        User user = db.getUsers().get(ID_USER_1);
         assertEquals(User.builder()
-                .id(ID)
-                .name("Bob")
-                .surname("Johnson")
-                .email("example@gmail.com")
-                .role(Role.USER)
-                .build(), userDao.getUser());
+                .id(ID_USER_1)
+                .name("Ivan")
+                .surname("Ivanov")
+                .email("ivanov_ivan@gmail.com")
+                .password("ivanov2000")
+                .gender("Male")
+                .build(), user);
     }
 }

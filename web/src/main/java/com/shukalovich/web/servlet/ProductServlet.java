@@ -8,9 +8,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.List;
+import static java.lang.Long.parseLong;
 
 @WebServlet("/products")
 public class ProductServlet extends HttpServlet {
@@ -24,7 +24,7 @@ public class ProductServlet extends HttpServlet {
             req.setAttribute("products", products);
             req.getRequestDispatcher(PagesUtil.PRODUCTS).forward(req, resp);
         } else {
-            req.setAttribute("product", productService.findById(Integer.getInteger(id)));
+            req.setAttribute("product", productService.findById(parseLong(id)));
             req.getRequestDispatcher(PagesUtil.PRODUCT).forward(req, resp);
         }
     }

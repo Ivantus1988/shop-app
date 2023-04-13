@@ -6,5 +6,6 @@ public enum Brand {
     XIAOMI,
     HONOR,
     HUAWEI,
+    NOKIA,
     GOOGLE
 }
