@@ -1,9 +1,13 @@
 package com.shukalovich.database.entity;
 
+import com.shukalovich.database.entity.enam.Brand;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Builder
 @Data
+@EqualsAndHashCode(of = "id")
 
 public class Product {
     private Long id;

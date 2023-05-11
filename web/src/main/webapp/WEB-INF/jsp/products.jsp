@@ -13,10 +13,7 @@
 <body>
 <%@ include file="header.jsp" %>
 
-
-
 <h1><fmt:message key="page.products.hello"/> ${sessionScope.user.name} ${sessionScope.user.surname}.</h1>
-
 
 <c:forEach var="product" items="${requestScope.products}">
     <h2><fmt:message key="page.products.brand"/> : ${product.brand}, <fmt:message key="page.products.model" /> : ${product.model}.</h2>

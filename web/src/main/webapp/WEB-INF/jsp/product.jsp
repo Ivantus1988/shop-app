@@ -3,10 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
+<fmt:setLocale value="ru_RU"/>
+<fmt:setBundle basename="translations"/>
 
 <head>
     <title>${product.model}</title>
 </head>
+
 <body>
 <%@ include file="header.jsp" %>
 

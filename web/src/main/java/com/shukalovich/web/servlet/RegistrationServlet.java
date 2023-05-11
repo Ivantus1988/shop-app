@@ -20,14 +20,14 @@ public class RegistrationServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         userService.save(
                 User.builder()
                         .email(req.getParameter("email"))
                         .password(req.getParameter("password"))
                         .name(req.getParameter("name"))
                         .surname(req.getParameter("surname"))
-                        .gender(req.getParameter("gender"))
+//                        .gender(req.getParameter("gender"))
                         .build());
         resp.sendRedirect("/login");
     }
