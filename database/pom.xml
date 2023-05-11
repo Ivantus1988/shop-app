@@ -25,7 +25,7 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jdbc</artifactId>
             <version>10.1.7</version>
-<!--            <scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
