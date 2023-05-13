@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @Builder
 @Data
 @EqualsAndHashCode(of = "id")
-
 public class User {
     private Long id;
     private String name;

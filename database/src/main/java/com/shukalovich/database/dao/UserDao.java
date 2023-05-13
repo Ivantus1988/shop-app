@@ -1,5 +1,6 @@
 package com.shukalovich.database.dao;
 
+import com.shukalovich.database.connection.ConnectionPool;
 import com.shukalovich.database.entity.User;
 import com.shukalovich.database.entity.enam.Gender;
 import com.shukalovich.database.entity.enam.Role;
@@ -13,8 +14,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.shukalovich.database.connection.ConnectionPool.get;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserDao implements Dao<Long, User> {
@@ -87,7 +86,7 @@ public final class UserDao implements Dao<Long, User> {
 
 
     public Optional<User> findByEmailAndPass(String email, String password) {
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var preparedStatement = connection.prepareStatement(FIND_PASSWORD_AND_EMAIL)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -102,7 +101,7 @@ public final class UserDao implements Dao<Long, User> {
 
     @Override
     public boolean delete(Long id) {
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setLong(1, id);
 
@@ -115,7 +114,7 @@ public final class UserDao implements Dao<Long, User> {
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var statement = connection.createStatement()) {
             var resultSet = statement.executeQuery(FIND_ALL_SQL);
             while (resultSet.next()) {
@@ -129,7 +128,7 @@ public final class UserDao implements Dao<Long, User> {
 
     @Override
     public Optional<User> findById(Long id) {
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             User user = null;
@@ -145,7 +144,7 @@ public final class UserDao implements Dao<Long, User> {
 
     @Override
     public Optional<User> update(User user) {
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             setPrepareStatement(user, preparedStatement);
             preparedStatement.setLong(5, user.getId());
@@ -158,7 +157,7 @@ public final class UserDao implements Dao<Long, User> {
 
     @Override
     public User save(User user) {
-        try (var connection = get();
+        try (var connection = ConnectionPool.get();
              var preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             setPrepareStatement(user, preparedStatement);
             preparedStatement.executeUpdate();

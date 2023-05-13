@@ -2,7 +2,6 @@ package com.shukalovich.web.servlet;
 
 import com.shukalovich.database.dto.ProductFilter;
 import com.shukalovich.database.entity.Product;
-import com.shukalovich.database.entity.enam.Brand;
 import com.shukalovich.service.ProductService;
 import com.shukalovich.web.util.PagesUtil;
 import jakarta.servlet.ServletException;
@@ -23,10 +22,10 @@ public class ProductServlet extends HttpServlet {
         String id = req.getParameter("id");
         if (id == null) {
             req.setAttribute("products", productService.findByFilter(new ProductFilter(
-                    Brand.valueOf(req.getParameter("brand") != null ? req.getParameter("brand") : "APPLE"),
-                    Double.parseDouble(req.getParameter("price") != null ? req.getParameter("price") : "400"),
-                    Integer.parseInt(req.getParameter("ram") != null ? req.getParameter("ram") : "4"),
-                    Integer.parseInt(req.getParameter("limit") != null ? req.getParameter("limit") : "4"),
+                    Double.parseDouble(req.getParameter("screen_size") != null ? req.getParameter("screen_size") : "2"),
+                    Double.parseDouble(req.getParameter("price") != null ? req.getParameter("price") : "2000"),
+                    Integer.parseInt(req.getParameter("ram") != null ? req.getParameter("ram") : "8"),
+                    Integer.parseInt(req.getParameter("limit") != null ? req.getParameter("limit") : "1"),
                     Integer.parseInt(req.getParameter("page") != null ? req.getParameter("page") : "1")
             )));
             req.getRequestDispatcher(PagesUtil.PRODUCTS).forward(req, resp);

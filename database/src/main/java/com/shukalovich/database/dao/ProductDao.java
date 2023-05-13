@@ -88,9 +88,9 @@ public final class ProductDao implements Dao<Long, Product> {
                    price,
                    description
             FROM product
-            WHERE brand = ?
-            AND price > ?
-            AND ram = ?
+            WHERE screen_size < ?
+            AND price < ?
+            AND ram < ?
             LIMIT ?
             OFFSET ?            
             """;
@@ -187,19 +187,19 @@ public final class ProductDao implements Dao<Long, Product> {
                 .id(resultSet.getLong("id"))
                 .brand(Brand.valueOf(resultSet.getString("brand")))
                 .model(resultSet.getString("model"))
-                .screenSize(resultSet.getLong("screen_size"))
+                .screenSize(resultSet.getDouble("screen_size"))
                 .screenResolution(resultSet.getString("screen_resolution"))
-                .ram(resultSet.getShort("ram"))
-                .memorySize(resultSet.getShort("memory_size"))
-                .price(resultSet.getShort("price"))
+                .ram(resultSet.getInt("ram"))
+                .memorySize(resultSet.getInt("memory_size"))
+                .price(resultSet.getDouble("price"))
                 .description(resultSet.getString("description"))
                 .build();
     }
 
     private static void setFilterParameters(ProductFilter filter, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(1, filter.brand().name());
+        preparedStatement.setDouble(1, filter.screenSize());
         preparedStatement.setDouble(2, filter.price());
-        preparedStatement.setDouble(3, filter.ram());
+        preparedStatement.setInt(3, filter.ram());
         preparedStatement.setInt(4, filter.limit());
         preparedStatement.setInt(5, filter.limit() * (filter.page() - 1));
     }
