@@ -1,4 +1,4 @@
-package com.shukalovich.database.entity;
+package com.shukalovich.database.entity.enam;
 
 public enum Brand {
     APPLE,

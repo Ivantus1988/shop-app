@@ -5,13 +5,13 @@ import java.util.Optional;
 
 public interface Dao<K, E> {
 
-    E delete(K id);
+    boolean delete(K id);
 
     List<E> findAll();
 
     Optional<E> findById(K id);
 
-    void update(E product);
+    Optional<E> update(E e);
 
     E save(E product);
 
