@@ -1,218 +1,75 @@
 package com.shukalovich.database.dao;
 
-import com.shukalovich.database.connection.ConnectionPool;
 import com.shukalovich.database.dto.ProductFilter;
-import com.shukalovich.database.entity.Product;
+import com.shukalovich.database.entity.ProductEntity;
+import com.shukalovich.database.entity.ProductEntity_;
 import com.shukalovich.database.entity.enam.Brand;
-import com.shukalovich.database.exception.DaoException;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import jakarta.persistence.criteria.Predicate;
+import org.hibernate.Session;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
+import org.hibernate.query.criteria.JpaRoot;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ProductDao implements Dao<Long, Product> {
+public final class ProductDao extends Dao<Long, ProductEntity> {
     private static final ProductDao INSTANCE = new ProductDao();
 
-    private static final String FIND_ALL_SQL = """
-            SELECT id,
-                   brand,
-                   model,
-                   screen_size,
-                   screen_resolution,
-                   ram,
-                   memory_size,
-                   price,
-                   description
-            FROM product;
-              """;
+    private ProductDao() {
+        super(ProductEntity.class);
+    }
 
-    private static final String FIND_BY_ID_SQL = """
-            SELECT id,
-             brand,
-             model,
-             screen_size,
-             screen_resolution,
-             ram,
-             memory_size,
-             price,
-             description
-            FROM product
-            WHERE id = ?
-            """;
+    public List<ProductEntity> findAll(Session session) {
+        HibernateCriteriaBuilder cb = session.getCriteriaBuilder();
+        JpaCriteriaQuery<ProductEntity> query = cb.createQuery(ProductEntity.class);
+        JpaRoot<ProductEntity> productRoot = query.from(ProductEntity.class);
+        query.select(productRoot);
+        return session.createQuery(query).list();
+    }
 
-    private static final String DELETE_SQL = """
-            DELETE FROM product
-            WHERE id = ?           
-            """;
+    public List<ProductEntity> findAllByBrand(Session session, Brand brand) {
+        HibernateCriteriaBuilder cb = session.getCriteriaBuilder();
+        JpaCriteriaQuery<ProductEntity> query = cb.createQuery(ProductEntity.class);
+        JpaRoot<ProductEntity> productRoot = query.from(ProductEntity.class);
+        query.select(productRoot);
+        query.where(cb.equal(productRoot.get(ProductEntity_.BRAND), brand));
+        return session.createQuery(query).list();
+    }
 
-    private static final String UPDATE_SQL = """
-            UPDATE product
-            SET brand             = ?,
-                model             = ?,
-                screen_size       = ?,
-                screen_resolution = ?,
-                ram               = ?,
-                memory_size       = ?,
-                price             = ?,
-                description       = ?
-            WHERE id = ?
-             """;
 
-    private static final String SAVE_SQL = """
-            INSERT INTO product
-                (brand,
-                model,
-                screen_size,
-                screen_resolution,
-                ram,
-                memory_size,
-                price,
-                description)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """;
+    public List<ProductEntity> findByFilter(Session session, ProductFilter filter) {
+        HibernateCriteriaBuilder cb = session.getCriteriaBuilder();
+        JpaCriteriaQuery<ProductEntity> query = cb.createQuery(ProductEntity.class);
+        JpaRoot<ProductEntity> productRoot = query.from(ProductEntity.class);
+        query.select(productRoot);
+        List<Predicate> predicates = collectPredicates(filter, cb, productRoot);
 
-    private static final String FIND_BY_FILTER_SQL = """
-              SELECT id,
-                   brand,
-                   model,
-                   screen_size,
-                   screen_resolution,
-                   ram,
-                   memory_size,
-                   price,
-                   description
-            FROM product
-            WHERE screen_size < ?
-            AND price < ?
-            AND ram < ?
-            LIMIT ?
-            OFFSET ?            
-            """;
+        query.where(predicates.toArray(Predicate[]::new));
 
-       @Override
-    public boolean delete(Long id) {
-        try (var connection = ConnectionPool.get();
-             var preparedStatement = connection.prepareStatement(DELETE_SQL)) {
-            preparedStatement.setLong(1, id);
+        return session.createQuery(query)
+                .setMaxResults(filter.getLimit())
+                .setFirstResult(filter.getOffset())
+                .list();
+    }
 
-            return preparedStatement.executeUpdate() > 0;
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
+    private static List<Predicate> collectPredicates(ProductFilter filter,
+                                                     HibernateCriteriaBuilder cb,
+                                                     JpaRoot<ProductEntity> productRoot) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (filter.getMemorySize() != null) {
+            predicates.add(cb.le(productRoot.get(ProductEntity_.MEMORY_SIZE),
+                    filter.getMemorySize()));
         }
-    }
-
-    @Override
-    public List<Product> findAll() {
-        List<Product> products = new ArrayList<>();
-        try (var connection = ConnectionPool.get();
-             var statement = connection.createStatement()) {
-            var resultSet = statement.executeQuery(FIND_ALL_SQL);
-            while (resultSet.next()) {
-                products.add(buildProduct(resultSet));
-            }
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
+        if (filter.getPrice() != null) {
+            predicates.add(cb.le(productRoot.get(ProductEntity_.PRICE),
+                    filter.getPrice()));
         }
-        return products;
-    }
-
-    public List<Product> findByFilter(ProductFilter filter) {
-        List<Product> products = new ArrayList<>();
-        try (var connection = ConnectionPool.get();
-             var preparedStatement = connection.prepareStatement(FIND_BY_FILTER_SQL)) {
-            setFilterParameters(filter, preparedStatement);
-            var resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                products.add(buildProduct(resultSet));
-            }
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
+        if (filter.getRam() != null) {
+            predicates.add(cb.le(productRoot.get(ProductEntity_.RAM),
+                    filter.getRam()));
         }
-        return products;
-    }
-
-    @Override
-    public Optional<Product> findById(Long id) {
-        try (var connection = ConnectionPool.get();
-             var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-            preparedStatement.setLong(1, id);
-            Product product = null;
-            var resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                product = buildProduct(resultSet);
-            }
-            return Optional.ofNullable(product);
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
-        }
-    }
-
-    @Override
-    public Optional<Product> update(Product product) {
-        try (var connection = ConnectionPool.get();
-             var preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            setPrepareStatement(product, preparedStatement);
-            preparedStatement.setLong(9, product.getId());
-            preparedStatement.executeUpdate();
-            return Optional.of(product);
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
-        }
-    }
-
-    @Override
-    public Product save(Product product) {
-        try (var connection = ConnectionPool.get();
-             var preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            setPrepareStatement(product, preparedStatement);
-            preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                product.setId(generatedKeys.getLong("id"));
-            }
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
-        }
-        return product;
-    }
-
-    private static Product buildProduct(ResultSet resultSet) throws SQLException {
-        return Product.builder()
-                .id(resultSet.getLong("id"))
-                .brand(Brand.valueOf(resultSet.getString("brand")))
-                .model(resultSet.getString("model"))
-                .screenSize(resultSet.getDouble("screen_size"))
-                .screenResolution(resultSet.getString("screen_resolution"))
-                .ram(resultSet.getInt("ram"))
-                .memorySize(resultSet.getInt("memory_size"))
-                .price(resultSet.getDouble("price"))
-                .description(resultSet.getString("description"))
-                .build();
-    }
-
-    private static void setFilterParameters(ProductFilter filter, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setDouble(1, filter.screenSize());
-        preparedStatement.setDouble(2, filter.price());
-        preparedStatement.setInt(3, filter.ram());
-        preparedStatement.setInt(4, filter.limit());
-        preparedStatement.setInt(5, filter.limit() * (filter.page() - 1));
-    }
-
-    private static void setPrepareStatement(Product product, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(1, String.valueOf(product.getBrand()));
-        preparedStatement.setString(2, product.getModel());
-        preparedStatement.setDouble(3, product.getScreenSize());
-        preparedStatement.setString(4, product.getScreenResolution());
-        preparedStatement.setInt(5, product.getRam());
-        preparedStatement.setInt(6, product.getMemorySize());
-        preparedStatement.setDouble(7, product.getPrice());
-        preparedStatement.setString(8, product.getDescription());
+        return predicates;
     }
 
     public static ProductDao getInstance() {

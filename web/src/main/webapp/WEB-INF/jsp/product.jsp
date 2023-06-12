@@ -15,8 +15,8 @@
 
 <h2> <fmt:message key="page.product.model" /> : ${product.model}.
     <fmt:message key="page.product.brand" />: ${product.brand}.</h2>
-<h2><fmt:message key="page.product.screenSize" />: ${product.screenSize},
-    <fmt:message key="page.product.screenResolution" />: ${product.screenResolution}.</h2>
+<h2><fmt:message key="page.product.screenSize" />: ${product.screen.screenSize},
+    <fmt:message key="page.product.screenResolution" />: ${product.screen.screenResolution}.</h2>
 <h2><fmt:message key="page.product.ram" />: ${product.ram},
     <fmt:message key="page.product.memorySize" /> ${product.memorySize}.</h2>
 <h2><fmt:message key="page.product.price" />: ${product.price}.</h2>

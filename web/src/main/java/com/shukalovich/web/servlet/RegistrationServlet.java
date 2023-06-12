@@ -1,6 +1,6 @@
 package com.shukalovich.web.servlet;
 
-import com.shukalovich.database.entity.User;
+import com.shukalovich.database.entity.UserEntity;
 import com.shukalovich.database.entity.enam.Gender;
 import com.shukalovich.service.UserService;
 import com.shukalovich.web.util.PagesUtil;
@@ -23,7 +23,7 @@ public class RegistrationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         userService.save(
-                User.builder()
+                UserEntity.builder()
                         .email(req.getParameter("email"))
                         .password(req.getParameter("password"))
                         .name(req.getParameter("name"))

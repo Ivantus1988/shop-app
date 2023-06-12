@@ -1,7 +1,7 @@
 package com.shukalovich.web.servlet;
 
 import com.shukalovich.database.dto.ProductFilter;
-import com.shukalovich.database.entity.Product;
+import com.shukalovich.database.entity.ProductEntity;
 import com.shukalovich.service.ProductService;
 import com.shukalovich.web.util.PagesUtil;
 import jakarta.servlet.ServletException;
@@ -10,8 +10,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+
 import java.io.IOException;
-import static com.shukalovich.database.entity.enam.Brand.valueOf;
+
+import static java.lang.Double.*;
+import static java.lang.Short.parseShort;
 
 @WebServlet("/products")
 public class ProductServlet extends HttpServlet {
@@ -21,13 +24,53 @@ public class ProductServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         if (id == null) {
-            req.setAttribute("products", productService.findByFilter(new ProductFilter(
-                    Double.parseDouble(req.getParameter("screen_size") != null ? req.getParameter("screen_size") : "2"),
-                    Double.parseDouble(req.getParameter("price") != null ? req.getParameter("price") : "2000"),
-                    Integer.parseInt(req.getParameter("ram") != null ? req.getParameter("ram") : "8"),
-                    Integer.parseInt(req.getParameter("limit") != null ? req.getParameter("limit") : "1"),
-                    Integer.parseInt(req.getParameter("page") != null ? req.getParameter("page") : "1")
-            )));
+            String memorySize;
+            String price;
+            String ram;
+            String limit;
+            String page;
+            if (req.getParameter("memorySize") == null || req.getParameter("memorySize").isEmpty()) {
+                memorySize = "1000";
+            } else {
+                memorySize = req.getParameter("memorySize");
+            }
+            if (req.getParameter("price") == null || req.getParameter("price").isEmpty()) {
+                price = "3000";
+            } else {
+                price = req.getParameter("price");
+            }
+            if (req.getParameter("ram") == null || req.getParameter("ram").isEmpty()) {
+                ram = "10";
+            } else {
+                ram = req.getParameter("ram");
+            }
+            if (req.getParameter("limit") == null || req.getParameter("limit").isEmpty()) {
+                limit = "6";
+            } else {
+                limit = req.getParameter("limit");
+            }
+            if (req.getParameter("page") == null || req.getParameter("page").isEmpty()) {
+                page = "1";
+            } else {
+                page = req.getParameter("page");
+            }
+//            ProductFilter build = ProductFilter.builder()
+//                    .memorySize((short) memorySize)
+//                    .price(1234.0)
+//                    .ram((short) 4)
+//                    .limit(1)
+//                    .page(1)
+//                    .build();
+            req.setAttribute("products", productService.findByFilter(
+                    ProductFilter.builder()
+                            .memorySize(Short.parseShort(memorySize))
+                            .price(Double.parseDouble(price))
+                            .ram(Short.parseShort(ram))
+                            .limit(Integer.valueOf(limit))
+                            .page(Integer.valueOf(page))
+                            .build()
+
+            ));
             req.getRequestDispatcher(PagesUtil.PRODUCTS).forward(req, resp);
         } else {
             redirectToProductPage(req, resp, productService.findById(Long.parseLong(id)));
@@ -36,14 +79,14 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String brand = req.getParameter("brand");
+        String memorySize = req.getParameter("memory_size");
         String price = req.getParameter("price");
         String ram = req.getParameter("ram");
-        Product.ProductBuilder builder = Product.builder();
-        builder.brand(valueOf(brand));
-        builder.price(Double.parseDouble(price));
-        builder.ram(Integer.parseInt(ram));
-        Product productForCreation = builder
+        ProductEntity.ProductEntityBuilder builder = ProductEntity.builder();
+        builder.memorySize(parseShort(memorySize));
+        builder.price(parseDouble(price));
+        builder.ram(parseShort(ram));
+        ProductEntity productForCreation = builder
                 .build();
         productService.save(productForCreation)
                 .ifPresentOrElse(
@@ -54,7 +97,8 @@ public class ProductServlet extends HttpServlet {
     }
 
     @SneakyThrows
-    private static void redirectToProductPage(HttpServletRequest req, HttpServletResponse resp, Product product) {
+    private static void redirectToProductPage(HttpServletRequest req, HttpServletResponse resp,
+                                              ProductEntity product) {
         req.setAttribute("product", product);
         req.getRequestDispatcher(PagesUtil.PRODUCT).forward(req, resp);
     }
