@@ -85,15 +85,12 @@ public class TestDataImporter {
                 .product(apple14Pro)
                 .build();
 
-
-
         session.persist(ivan);
         session.persist(petr);
         session.persist(apple14Pro);
         session.persist(honor70);
         session.persist(orderIvan);
         session.persist(orderPetr);
-
 
     }
 }

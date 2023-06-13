@@ -1,7 +1,20 @@
 package com.shukalovich.database.entity;
 
 import com.shukalovich.database.entity.enam.Brand;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +33,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "product")
-public class ProductEntity implements BaseEntity<Long>{
+public class ProductEntity implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +71,7 @@ public class ProductEntity implements BaseEntity<Long>{
 
     @Builder.Default
     @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
-     private List<FactoryEntity> factory = new ArrayList<>();
+    private List<FactoryEntity> factory = new ArrayList<>();
 
     public void addOrder(OrderEntity order) {
         this.orders.add(order);

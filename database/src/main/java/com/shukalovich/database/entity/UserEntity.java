@@ -32,7 +32,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Table(name = "users")
-public class UserEntity extends CreatableEntity implements BaseEntity<Long>{
+public class UserEntity extends CreatableEntity implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

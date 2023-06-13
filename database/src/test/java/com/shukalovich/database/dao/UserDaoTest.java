@@ -1,5 +1,6 @@
 package com.shukalovich.database.dao;
 
+import com.shukalovich.database.TestDataImporter;
 import com.shukalovich.database.entity.Address;
 import com.shukalovich.database.entity.ProductEntity;
 import com.shukalovich.database.entity.UserEntity;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.shukalovich.database.TestDataImporter.*;
 import static com.shukalovich.database.entity.enam.Gender.MALE;
 import static com.shukalovich.database.entity.enam.Role.USER;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -27,7 +27,7 @@ public class UserDaoTest {
     static void beforeAll() {
         @Cleanup var session = hibernateFactory.getSession();
         session.beginTransaction();
-        importTestData(session);
+        TestDataImporter.importTestData(session);
         session.getTransaction().commit();
     }
 

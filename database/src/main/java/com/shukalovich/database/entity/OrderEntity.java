@@ -20,7 +20,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = "products")
+@ToString(exclude = "product")
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "orders")

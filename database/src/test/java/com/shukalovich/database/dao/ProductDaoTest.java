@@ -5,7 +5,6 @@ import com.shukalovich.database.entity.ProductEntity;
 import com.shukalovich.database.entity.Screen;
 import com.shukalovich.database.hibernate.HibernateFactory;
 import lombok.Cleanup;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
-import static com.shukalovich.database.TestDataImporter.*;
 import static com.shukalovich.database.entity.enam.Brand.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,14 +23,6 @@ class ProductDaoTest {
 
     private static final ProductDao productDao = ProductDao.getInstance();
     private static final HibernateFactory hibernateFactory = HibernateFactory.getInstance();
-
-    @BeforeAll
-    static void beforeAll() {
-        @Cleanup var session = hibernateFactory.getSession();
-        session.beginTransaction();
-        importTestData(session);
-        session.getTransaction().commit();
-    }
 
     @Test
     @Order(1)
@@ -65,9 +55,9 @@ class ProductDaoTest {
     void whenFindAllByFilterContainsOnlyPriceInvoked_ThenAllFilteredContainsOnlyPriceProductsOfBrandReturned() {
         @Cleanup var session = hibernateFactory.getSession();
         Double[] actual = productDao.findByFilter(session, ProductFilter
-                .builder()
-                .price(1248.12)
-                .build())
+                        .builder()
+                        .price(1248.12)
+                        .build())
                 .stream()
                 .map(ProductEntity::getPrice)
                 .toArray(Double[]::new);
@@ -81,9 +71,9 @@ class ProductDaoTest {
     void whenFindAllByFilterContainsPriceAndRamInvoked_ThenAllFilteredContainsPriceAndRamProductsOfBrandReturned() {
         @Cleanup var session = hibernateFactory.getSession();
         String[] actual = productDao.findByFilter(session, ProductFilter.builder()
-                .price(1248.12)
-                .ram((short) 8)
-                .build())
+                        .price(1248.12)
+                        .ram((short) 8)
+                        .build())
                 .stream()
                 .map(ProductEntity::getModel)
                 .toArray(String[]::new);
@@ -127,7 +117,8 @@ class ProductDaoTest {
     void whenFindById_ThenReturnedValidProduct() {
         @Cleanup var session = hibernateFactory.getSession();
         ProductEntity actual = productDao.findById(session, 1l);
-        assertNotNull(actual);;
+        assertNotNull(actual);
+        ;
         assertEquals("14 Pro", actual.getModel());
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "products")
 @Entity
 @Table(name = "factory")
-public class FactoryEntity implements BaseEntity<Long>{
+public class FactoryEntity implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
