@@ -9,11 +9,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+
 import java.io.IOException;
 
 @WebServlet("/registration")
+@Controller
 public class RegistrationServlet extends HttpServlet {
-    private final UserService userService = UserService.getInstance();
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        ApplicationContext context = (ApplicationContext) getServletContext().getAttribute("applicationContext");
+        userService = context.getBean(UserService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

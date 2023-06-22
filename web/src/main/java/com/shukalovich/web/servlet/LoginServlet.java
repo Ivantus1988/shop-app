@@ -9,12 +9,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
 @WebServlet("/login")
+@Controller
 public class LoginServlet extends HttpServlet {
-    private final UserService userService = UserService.getInstance();
+
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        ApplicationContext context = (ApplicationContext) getServletContext().getAttribute("applicationContext");
+        userService = context.getBean(UserService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,6 +43,7 @@ public class LoginServlet extends HttpServlet {
                 );
 
     }
+
     @SneakyThrows
     private static void successLogin(HttpServletRequest req, HttpServletResponse resp, UserEntity user) {
         req.getSession().setAttribute("user", user);

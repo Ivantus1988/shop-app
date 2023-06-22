@@ -1,89 +1,48 @@
 package com.shukalovich.service;
 
-import com.shukalovich.database.dao.ProductDao;
 import com.shukalovich.database.dto.ProductFilter;
 import com.shukalovich.database.entity.ProductEntity;
-import com.shukalovich.database.hibernate.HibernateFactory;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.shukalovich.database.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ProductService {
-    private static final ProductService INSTANCE = new ProductService();
-    private final ProductDao productDao = ProductDao.getInstance();
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ProductService {
 
-    private final HibernateFactory hibernateFactory = HibernateFactory.getInstance();
+    private final ProductRepository productRepository;
 
     public List<ProductEntity> findAll() {
-        List<ProductEntity> products;
-        try (var session = hibernateFactory.getSession()) {
-            session.beginTransaction();
-            products = productDao.findAll(session);
-            session.getTransaction().commit();
-        }
-        return products;
+        return productRepository.findAll();
     }
 
     public List<ProductEntity> findByFilter(ProductFilter filter) {
-        List<ProductEntity> products;
-        try (var session = hibernateFactory.getSession()) {
-            session.beginTransaction();
-            products = productDao.findByFilter(session, filter);
-            session.getTransaction().commit();
-        }
-        return products;
+        return productRepository.findByFilter(filter);
     }
 
-
     public ProductEntity findById(Long id) {
-        ProductEntity product;
-        try (var session = hibernateFactory.getSession()) {
-            session.beginTransaction();
-            product = productDao.findById(session, id);
-            session.getTransaction().commit();
-        }
-        return product;
+        return productRepository.findById(id)
+                .orElse(ProductEntity.builder().build());
     }
 
 
     public Optional<ProductEntity> update(ProductEntity product) {
-        try (var session = hibernateFactory.getSession()) {
-            session.beginTransaction();
-            productDao.update(session, product);
-            session.getTransaction().commit();
-        }
-        return Optional.ofNullable(product);
+        return Optional.of(productRepository.save(product));
     }
 
-
     public Optional<ProductEntity> save(ProductEntity product) {
-        Optional<ProductEntity> newProduct;
-        try (var session = hibernateFactory.getSession()) {
-            session.beginTransaction();
-            newProduct = productDao.save(session, product);
-            session.getTransaction().commit();
-        }
-        return newProduct;
+        return Optional.of(productRepository.save(product));
     }
 
     public boolean delete(Long id) {
-        try (var session = hibernateFactory.getSession()) {
-            session.getTransaction();
-            ProductEntity removedProduct = session.get(ProductEntity.class, id);
-            if (removedProduct == null) {
-                session.getTransaction().commit();
-                return false;
-            }
-            productDao.delete(session, id);
-            session.getTransaction().commit();
-        }
+        Optional<ProductEntity> removedProduct = productRepository.findById(id);
+        removedProduct.get();
+        productRepository.delete(removedProduct.get());
         return true;
-    }
-
-    public static ProductService getInstance() {
-        return INSTANCE;
     }
 }

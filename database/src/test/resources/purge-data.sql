@@ -1,0 +1,7 @@
+DELETE
+FROM product
+WHERE TRUE;
+
+DELETE
+FROM users
+WHERE TRUE;
