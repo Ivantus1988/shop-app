@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
@@ -17,8 +19,16 @@ import static java.lang.Double.*;
 import static java.lang.Short.parseShort;
 
 @WebServlet("/products")
+@Controller
 public class ProductServlet extends HttpServlet {
-    private final ProductService productService = ProductService.getInstance();
+
+    private ProductService productService;
+
+    @Override
+    public void init() throws ServletException {
+        ApplicationContext context = (ApplicationContext) getServletContext().getAttribute("applicationContext");
+        productService = context.getBean(ProductService.class);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -54,13 +64,7 @@ public class ProductServlet extends HttpServlet {
             } else {
                 page = req.getParameter("page");
             }
-//            ProductFilter build = ProductFilter.builder()
-//                    .memorySize((short) memorySize)
-//                    .price(1234.0)
-//                    .ram((short) 4)
-//                    .limit(1)
-//                    .page(1)
-//                    .build();
+
             req.setAttribute("products", productService.findByFilter(
                     ProductFilter.builder()
                             .memorySize(Short.parseShort(memorySize))
