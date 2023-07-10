@@ -23,6 +23,7 @@
     </label> <br>
 
     <button type="submit"><fmt:message key="page.login.submit"/></button>
+
     <a href="${pageContext.request.contextPath}/registration">
         <button type="button"><fmt:message key="page.login.register.button"/></button>
     </a>

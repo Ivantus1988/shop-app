@@ -1,8 +1,10 @@
 package com.shukalovich.service;
 
+import com.shukalovich.database.dto.LoginDto;
 import com.shukalovich.database.entity.UserEntity;
 import com.shukalovich.database.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +18,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<UserEntity> findByEmailAndPass(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+    public Optional<UserEntity> findByEmailAndPass(LoginDto login) {
+        return userRepository.findByEmailAndPassword(login.email(), login.password());
     }
 
     public Optional<UserEntity> findById(Long id) {
@@ -30,6 +32,9 @@ public class UserService {
 
     public List<UserEntity> findAll() {
         return userRepository.findAll();
+    }
+    public Optional<UserEntity> getBy(LoginDto login) {
+        return userRepository.findByEmailAndPassword(login.email(), login.password());
     }
 
     public Optional<UserEntity> update(UserEntity user) {

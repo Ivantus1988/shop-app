@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
-@WebServlet("/registration")
 @Controller
 public class RegistrationServlet extends HttpServlet {
     private UserService userService;

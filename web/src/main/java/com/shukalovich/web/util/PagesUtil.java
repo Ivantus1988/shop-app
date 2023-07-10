@@ -5,10 +5,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class PagesUtil {
 
-    private static final String PREFIX = "/WEB-INF/jsp/";
-    public static final String PRODUCTS = PREFIX + "products.jsp";
-    public static final String PRODUCT = PREFIX + "product.jsp";
-    public static final String LOGIN = PREFIX + "login.jsp";
-    public static final String REGISTRATION = PREFIX + "registration.jsp";
+    public static final String PREFIX = "/WEB-INF/view/";
+    public static final String  SUFFIX = ".jsp";
+    public static final String PRODUCTS =  "products";
+    public static final String PRODUCT = "product";
+    public static final String LOGIN =  "login";
+    public static final String REGISTRATION =  "registration";
 
 }
