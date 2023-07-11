@@ -16,7 +16,7 @@ public class ProductFilter {
     private Integer page;
 
     public Integer getLimit() {
-        return limit == null ? 6 : limit;
+        return limit == null ? 10 : limit;
     }
 
     public Integer getOffset() {

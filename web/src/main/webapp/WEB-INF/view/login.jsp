@@ -14,8 +14,8 @@
 
 <form action="${pageContext.request.contextPath}/login" method="post">
 
-    <label for="email"><fmt:message key="page.login.email"/>:
-        <input type="text" name="email" id="email" required>
+    <label for="usernameId"><fmt:message key="page.login.email"/>:
+        <input type="text" name="username" id="usernameId" required>
     </label> <br>
 
     <label for="password"><fmt:message key="page.login.password"/>:
@@ -23,12 +23,13 @@
     </label> <br>
 
     <button type="submit"><fmt:message key="page.login.submit"/></button>
+
     <a href="${pageContext.request.contextPath}/registration">
         <button type="button"><fmt:message key="page.login.register.button"/></button>
     </a>
 </form>
 
-<c:if test="${param.error == true}">
+<c:if test="${param.error != null}">
     <div style="color: crimson">
         <fmt:message key="page.login.error"/>
     </div>

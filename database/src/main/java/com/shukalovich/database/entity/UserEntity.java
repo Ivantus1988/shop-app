@@ -48,7 +48,7 @@ public class UserEntity extends CreatableEntity implements BaseEntity<Long> {
     @Column(name = "email", unique = true, nullable = false, length = 32)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 32)
+    @Column(name = "password", nullable = false, length = 256)
     private String password;
 
     @Column(name = "gender", length = 32)

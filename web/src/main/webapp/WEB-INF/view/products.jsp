@@ -13,10 +13,11 @@
 <body>
 <%@ include file="header.jsp" %>
 
-<h1><fmt:message key="page.products.hello"/> ${sessionScope.user.name} ${sessionScope.user.surname}.</h1>
+<c:if test="${param.error == true}">
+    продукт не был создан или изменен
+</c:if>
 
-
-<form action="${pageContext.request.contextPath}/products" method="get">
+<form action="${pageContext.request.contextPath}/product" method="get">
     <label for="pageId"><fmt:message key="page.products.selectNumberPages"/></label><br>
     <input type="text" id="pageId" name="page"><br>
 
@@ -66,7 +67,7 @@
 <c:forEach var="product" items="${requestScope.products}">
     <h2><fmt:message key="page.products.brand"/> : ${product.brand}, <fmt:message key="page.products.model"/>
         : ${product.model}.</h2>
-    <h5><a href=${pageContext.request.contextPath}/products?id=${product.id}><fmt:message
+    <h5><a href=${pageContext.request.contextPath}/product/${product.id}><fmt:message
             key="page.products.moreDetailed"/> </a></h5>
 </c:forEach>
 

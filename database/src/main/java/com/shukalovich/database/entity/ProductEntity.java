@@ -70,7 +70,7 @@ public class ProductEntity implements BaseEntity<Long> {
     private ProducerEntity producer;
 
     @Builder.Default
-    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<FactoryEntity> factory = new ArrayList<>();
 
     public void addOrder(OrderEntity order) {
