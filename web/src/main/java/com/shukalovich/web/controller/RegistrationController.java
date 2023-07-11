@@ -23,7 +23,6 @@ public class RegistrationController {
     }
 
 
-    //TODO добавить в форму адрес
     @PostMapping
     public String register(RegistrationDto registration) {
         return userService.createUser(registration)
