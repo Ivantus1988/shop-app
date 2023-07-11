@@ -1,17 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div>
-<fmt:setLocale value="ru_RU"/>
-<fmt:setBundle basename="translations"/>
+    <fmt:setLocale value="ru_RU"/>
+    <fmt:setBundle basename="translations"/>
 
-<h5> Мобильные телефоны. </h5> <h5><a href="/products">На главную</a> Apple | Samsung | Xiaomi | Honor | Google</h5>
+    <h5> Мобильные телефоны. </h5> <h5><a href="/products">На главную</a> Apple | Samsung | Xiaomi | Honor | Google</h5>
 </div>
-<c:if test="${sessionScope.user != null}">
-    <form action="${pageContext.request.contextPath}/logout" method="get">
+<sec:authorize access="isAuthenticated()">
+    <b>Привет ${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.username}</b>
+    <form action="/logout" method="post">
         <input type="submit" value="Logout">
     </form>
-
-</c:if>
+</sec:authorize>
 
 <%--<div id="locale">--%>
 <%--    <form action="${pageContext.request.contextPath}/locale" method="post">--%>

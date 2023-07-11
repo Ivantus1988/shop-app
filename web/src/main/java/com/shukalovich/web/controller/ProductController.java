@@ -5,6 +5,7 @@ import com.shukalovich.database.dto.ProductFilter;
 import com.shukalovich.database.entity.ProductEntity;
 import com.shukalovich.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +41,14 @@ public class ProductController {
         return "create-product";
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(path = "/create")
     public String createProduct(ProductCreationDto product) {
         Optional<ProductEntity> newProduct = productService.save(product);
         return "redirect:/product/" + newProduct.get().getId();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(path = "/{id}/update")
     public String updateProduct(@PathVariable Long id, ProductCreationDto product) {
        return productService.update(id, product).map(
@@ -54,6 +57,7 @@ public class ProductController {
                 .orElse("redirect:/products/?error=true");
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(path = "/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
         productService.delete(id);

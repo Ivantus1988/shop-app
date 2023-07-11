@@ -5,7 +5,6 @@ import com.shukalovich.database.dto.ProductFilter;
 import com.shukalovich.database.dto.ProductReadDto;
 import com.shukalovich.database.entity.ProductEntity;
 import com.shukalovich.database.entity.Screen;
-import com.shukalovich.database.entity.enam.Brand;
 import com.shukalovich.database.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

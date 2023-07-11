@@ -33,6 +33,18 @@
         <option value="FEMALE"><fmt:message key="page.login.gender.female"/> </option>
     </select>
 
+    <label for="city"><fmt:message key="page.login.password" />:</label><br>
+    <input type="text" id="city" name="city"><br>
+
+    <label for="street"><fmt:message key="page.login.password" />:</label><br>
+    <input type="text" id="street" name="street"><br>
+
+    <label for="building"><fmt:message key="page.login.password" />:</label><br>
+    <input type="text" id="building" name="building"><br>
+
+    <label for="flat"><fmt:message key="page.login.password" />:</label><br>
+    <input type="text" id="flat" name="flat"><br>
+
     <button type="submit"><fmt:message key="page.login.registration" /></button>
 </form>
 

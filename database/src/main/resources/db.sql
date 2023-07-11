@@ -61,7 +61,7 @@ CREATE TABLE users
     name       VARCHAR(32) NOT NULL,
     surname    VARCHAR(32) NOT NULL,
     email      VARCHAR(32) UNIQUE,
-    password   VARCHAR(32) NOT NULL,
+    password   VARCHAR(256) NOT NULL,
     gender     VARCHAR(32) NULL,
     role       VARCHAR(32) NULL,
     city       VARCHAR(32) NULL,
